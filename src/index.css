@@ -1,0 +1,100 @@
+@import 'tailwindcss';
+
+/* Theme tokens. "ink" is the page background and "paper" the foreground, so both swap in light mode.
+   "lime" is the accent fill; "accent" is accent-colored text (lime is unreadable as text on a light page). */
+:root,
+[data-theme='dark'] {
+  --ink: #0b0b0a;
+  --paper: #f4f1ea;
+  --surface: #121210;
+  --line: #262622;
+  --lime: #d4ff3a;
+  --accent: #d4ff3a;
+  --on-lime: #0b0b0a;
+  --chroma-filter: grayscale(1) brightness(0.78);
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --ink: #f4f1ea;
+  --paper: #11110f;
+  --surface: #fbfaf6;
+  --line: #dcd8cc;
+  --lime: #d0fb3c;
+  --accent: #5f8200;
+  --on-lime: #0b0b0a;
+  --chroma-filter: grayscale(1) brightness(1.04) contrast(0.9);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-paper: var(--paper);
+  --color-lime: var(--lime);
+  --color-accent: var(--accent);
+  --color-on-lime: var(--on-lime);
+}
+
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Geist', ui-sans-serif, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* ReactBits StarBorder */
+  --animate-star-movement-bottom: star-movement-bottom linear infinite alternate;
+  --animate-star-movement-top: star-movement-top linear infinite alternate;
+
+  @keyframes star-movement-bottom {
+    0% { transform: translate(0%, 0%); opacity: 1; }
+    100% { transform: translate(-100%, 0%); opacity: 0; }
+  }
+  @keyframes star-movement-top {
+    0% { transform: translate(0%, 0%); opacity: 1; }
+    100% { transform: translate(100%, 0%); opacity: 0; }
+  }
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden; /* the deck owns navigation; slides scroll internally */
+    background: var(--ink);
+  }
+  body {
+    @apply bg-ink font-sans text-paper antialiased;
+  }
+  ::selection {
+    background: var(--lime);
+    color: var(--on-lime);
+  }
+  .font-display {
+    font-variation-settings: 'opsz' 96;
+  }
+}
+
+/* Theme switch: the new theme grows out of the toggle as a circle (see src/theme.tsx) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Slide scrollers: hide the bar, keep scrolling */
+.slide-scroller {
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+.slide-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* ReactBits ChromaGrid reveals color under the cursor; touch screens have no cursor, so show full color */
+@media (hover: none) {
+  .chroma-grid > .z-30,
+  .chroma-grid > .z-40 {
+    display: none;
+  }
+}
